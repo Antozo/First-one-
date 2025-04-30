@@ -3,189 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Your Link</title>
+    <title>Subscribe to Unlock Content</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
         }
         .container {
             background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
         }
         h1 {
-            color: #333;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
         .btn {
-            background-color: #4CAF50;
+            background-color: #3498db;
             color: white;
             border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
+            padding: 14px 20px;
             font-size: 16px;
-            margin: 10px 5px;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 5px;
+            width: 100%;
+            font-weight: 500;
             transition: background-color 0.3s;
         }
         .btn:hover {
-            background-color: #45a049;
+            background-color: #2980b9;
         }
         .btn:disabled {
-            background-color: #cccccc;
+            background-color: #95a5a6;
             cursor: not-allowed;
         }
-        .link-container {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #e9f7ef;
-            border-radius: 5px;
+        .success-message {
             display: none;
+            color: #27ae60;
+            font-weight: 500;
+            margin-top: 20px;
         }
-        #admin-panel {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
+        .countdown {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 10px;
         }
-        input {
-            padding: 8px;
-            margin: 5px;
-            width: 80%;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        #countdown {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 15px 0;
-            color: #333;
-        }
-        .progress-bar {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        .progress {
-            height: 10px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            width: 0%;
-            transition: width 1s linear;
+        .checkbox-group input {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Get Your Link</h1>
-        <p>Complete the action below to receive your special link</p>
+        <h1>Subscribe to Unlock Content</h1>
+        <p>Enter your email below to subscribe and get immediate access</p>
         
-        <button class="btn" id="actionBtn">Start Countdown</button>
+        <form id="subscribeForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required placeholder="your@email.com">
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" required>
+                <label for="agreeTerms">I agree to the terms and conditions</label>
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">Subscribe & Unlock</button>
+            <div class="countdown" id="countdown"></div>
+        </form>
         
-        <div id="countdown"></div>
-        <div class="progress-bar">
-            <div class="progress" id="progressBar"></div>
-        </div>
-        
-        <div class="link-container" id="linkContainer">
-            <h3>Your Link:</h3>
-            <a id="displayLink" href="#" target="_blank">Click here</a>
-        </div>
-        
-        <!-- Admin Panel (initially hidden) -->
-        <div id="admin-panel" style="display: none;">
-            <h3>Admin Panel</h3>
-            <input type="text" id="linkInput" placeholder="Enter the destination URL">
-            <button class="btn" id="saveBtn">Save Link</button>
+        <div class="success-message" id="successMessage">
+            Subscription successful! Redirecting you to the content...
         </div>
     </div>
 
     <script>
-        // Admin mode - add ?admin to URL to access
-        if (window.location.href.includes('?admin')) {
-            document.getElementById('admin-panel').style.display = 'block';
-        }
-
-        // Get elements
-        const actionBtn = document.getElementById('actionBtn');
-        const linkContainer = document.getElementById('linkContainer');
-        const displayLink = document.getElementById('displayLink');
-        const saveBtn = document.getElementById('saveBtn');
-        const linkInput = document.getElementById('linkInput');
-        const countdownDisplay = document.getElementById('countdown');
-        const progressBar = document.getElementById('progressBar');
-
-        // Check if there's a saved link in localStorage
-        const savedLink = localStorage.getItem('redirectLink');
-        if (savedLink) {
-            displayLink.href = savedLink;
-            displayLink.textContent = savedLink;
-        } else {
-            // Default link if none is set
-            displayLink.href = "https://example.com";
-            displayLink.textContent = "https://example.com";
-        }
-
-        // Countdown variables
-        let countdown;
-        let timeLeft = 10;
-
-        // Action button click handler
-        actionBtn.addEventListener('click', function() {
-            // Disable the button during countdown
-            actionBtn.disabled = true;
-            actionBtn.textContent = "Countdown Running...";
+        const form = document.getElementById('subscribeForm');
+        const emailInput = document.getElementById('email');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const countdown = document.getElementById('countdown');
+        
+        // The URL to redirect to after successful subscription
+        const REDIRECT_URL = "https://www.youtube.com/@antozo_op"; // CHANGE THIS TO YOUR DESIRED URL
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Start the countdown
-            countdown = setInterval(function() {
-                timeLeft--;
-                countdownDisplay.textContent = `Please wait: ${timeLeft} seconds`;
-                progressBar.style.width = `${(10 - timeLeft) * 10}%`;
+            // Validate email
+            if (!emailInput.value || !emailInput.checkValidity()) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Disable the button to prevent multiple submissions
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            
+            // Simulate form submission (replace with actual API call in production)
+            setTimeout(() => {
+                // Show success message
+                form.style.display = 'none';
+                successMessage.style.display = 'block';
                 
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    countdownDisplay.textContent = "Action Completed!";
-                    actionBtn.textContent = "Done!";
+                // Start countdown before redirect
+                let seconds = 5;
+                countdown.textContent = `Redirecting in ${seconds} seconds...`;
+                
+                const timer = setInterval(() => {
+                    seconds--;
+                    countdown.textContent = `Redirecting in ${seconds} seconds...`;
                     
-                    // Show the link
-                    linkContainer.style.display = 'block';
-                }
-            }, 1000);
-        });
-
-        // Save link handler (admin function)
-        saveBtn.addEventListener('click', function() {
-            const newLink = linkInput.value.trim();
-            if (newLink) {
-                // Basic URL validation
-                if (!newLink.startsWith('http://') && !newLink.startsWith('https://')) {
-                    alert("Please enter a valid URL starting with http:// or https://");
-                    return;
-                }
+                    if (seconds <= 0) {
+                        clearInterval(timer);
+                        window.location.href = REDIRECT_URL;
+                    }
+                }, 1000);
                 
-                // Save to localStorage
-                localStorage.setItem('redirectLink', newLink);
-                displayLink.href = newLink;
-                displayLink.textContent = newLink;
-                alert("Link saved successfully!");
-            } else {
-                alert("Please enter a URL");
-            }
+                // In a real implementation, you would:
+                // 1. Send the email to your server
+                // 2. Verify the subscription
+                // 3. Then redirect to the protected content
+                
+            }, 1500); // Simulate network delay
         });
-
-        // Reset button if page is refreshed
-        window.addEventListener('beforeunload', function() {
-            if (countdown) {
-                clearInterval(countdown);
+        
+        // Admin function to change redirect URL
+        if (window.location.href.includes('?admin')) {
+            const newUrl = prompt('Enter new redirect URL:', REDIRECT_URL);
+            if (newUrl) {
+                // In a real implementation, you would save this to your database
+                console.log('New redirect URL would be saved as:', newUrl);
+                alert('Redirect URL updated (this demo doesn\'t persist changes)');
             }
-        });
+        }
     </script>
 </body>
 </html>
