@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#121212"/>
+  <title>Premium Content Unlock | Watch or Subscribe to Access</title>
+  <meta name="description" content="Unlock premium content by watching a short video or subscribing to our channel">
+  
+  <!-- AdMob Configuration -->
+  <meta name="google-adsense-account" content="ca-app-pub-9189946284954938~2011340226">
+  
+  <style>
+    :root {
+      --primary: #1e88e5;
+      --primary-dark: #1565c0;
+      --secondary: #673ab7;
+      --secondary-light: #7e57c2;
+      --success: #4caf50;
+      --background: #121212;
+      --surface: #1e1e1e;
+      --text: #ffffff;
+      --text-secondary: #b3b3b3;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background-color: var(--surface);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      background: var(--primary);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      max-width: 300px;
+      margin: 10px auto;
+      display: block;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .btn-success:hover {
+      background: #3d8b40;
+    }
+
+    .progress-container {
+      width: 100%;
+      max-width: 300px;
+      background: #333;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 30px auto;
+      display: none;
+      height: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      transition: width 1s linear;
+    }
+
+    .options {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 30px;
+      width: 100%;
+    }
+
+    .option-card {
+      background-color: var(--surface);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .option-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      border-color: var(--primary);
+    }
+
+    .option-card.selected {
+      border-color: var(--success);
+      background-color: rgba(76, 175, 80, 0.1);
+    }
+
+    .option-icon {
+      font-size: 32px;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+
+    .option-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .option-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .continue-btn {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .ad-container {
+      width: 100%;
+      margin: 30px 0;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .ad-label {
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      .btn {
+        padding: 12px 24px;
+      }
+    }
+  </style>
+  <!-- AdMob Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-9189946284954938"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Unlock Premium Content</h1>
+    <p>Complete one simple action to access exclusive content</p>
+    
+    <button class="btn" id="startBtn">Begin Unlock Process</button>
+
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="options" id="unlockOptions">
+      <div class="option-card fade-in" style="animation-delay: 0.1s" data-option="watch">
+        <div class="option-icon">🎥</div>
+        <div class="option-title">Watch 30 Seconds</div>
+        <div class="option-desc">View our video to unlock content</div>
+      </div>
+      
+      <div class="option-card fade-in" style="animation-delay: 0.3s" data-option="subscribe">
+        <div class="option-icon">🔔</div>
+        <div class="option-title">Subscribe to Channel</div>
+        <div class="option-desc">Become a subscriber for full access</div>
+      </div>
+    </div>
+    
+    <button class="btn btn-success continue-btn hidden" id="continueBtn">
+      Continue to Premium Content
+    </button>
+    
+    <!-- AdMob Ad Unit -->
+    <div class="ad-container">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-app-pub-9189946284954938"
+           data-ad-slot="6862251771"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const unlockOptions = document.getElementById('unlockOptions');
+    const continueBtn = document.getElementById('continueBtn');
+    const optionCards = document.querySelectorAll('.option-card');
+    let unlockTimer;
+    let selectedOption = null;
+
+    // Start unlock process
+    startBtn.addEventListener('click', () => {
+      startBtn.classList.add('hidden');
+      progressContainer.style.display = 'block';
+      
+      let seconds = 0;
+      unlockTimer = setInterval(() => {
+        seconds++;
+        const percent = Math.min((seconds / 3) * 100, 100); // 3 second timer
+        progressBar.style.width = percent + '%';
+
+        if (seconds >= 3) {
+          clearInterval(unlockTimer);
+          progressContainer.style.display = 'none';
+          unlockOptions.style.display = 'flex';
+        }
+      }, 1000);
+    });
+
+    // Handle option selection
+    optionCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Remove selected class from all cards
+        optionCards.forEach(c => c.classList.remove('selected'));
+        
+        // Add selected class to clicked card
+        card.classList.add('selected');
+        selectedOption = card.getAttribute('data-option');
+        
+        // Show continue button
+        continueBtn.classList.remove('hidden');
+        
+        // Track selection (you could send this to analytics)
+        console.log('User selected:', selectedOption);
+        
+        // Load additional ads after selection
+        if (window.adsbygoogle) {
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({});
+        }
+      });
+    });
+
+    // Continue to content
+    continueBtn.addEventListener('click', () => {
+      // Here you would typically verify completion (e.g., check subscription status)
+      // For this demo, we'll just redirect
+      
+      // Replace with your actual content page URL
+      window.location.href = "https://yourwebsite.com/premium-content.html";
+      
+      // Or you could open in a new tab with:
+      // window.open("https://yourwebsite.com/premium-content.html", "_blank");
+    });
+
+    // Reset if user leaves page (for better tracking)
+    window.addEventListener('beforeunload', () => {
+      if (unlockTimer) clearInterval(unlockTimer);
+    });
+
+    // Initialize AdMob
+    document.addEventListener('DOMContentLoaded', () => {
+      // You can add additional ad loading here if needed
+    });
+  </script>
+</body>
+</html>
