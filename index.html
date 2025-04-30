@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Your Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .link-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e9f7ef;
+            border-radius: 5px;
+            display: none;
+        }
+        #admin-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 80%;
+        }
+        #countdown {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #333;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .progress {
+            height: 10px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Get Your Link</h1>
+        <p>Complete the action below to receive your special link</p>
+        
+        <button class="btn" id="actionBtn">Start Countdown</button>
+        
+        <div id="countdown"></div>
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+        
+        <div class="link-container" id="linkContainer">
+            <h3>Your Link:</h3>
+            <a id="displayLink" href="#" target="_blank">Click here</a>
+        </div>
+        
+        <!-- Admin Panel (initially hidden) -->
+        <div id="admin-panel" style="display: none;">
+            <h3>Admin Panel</h3>
+            <input type="text" id="linkInput" placeholder="Enter the destination URL">
+            <button class="btn" id="saveBtn">Save Link</button>
+        </div>
+    </div>
+
+    <script>
+        // Admin mode - add ?admin to URL to access
+        if (window.location.href.includes('?admin')) {
+            document.getElementById('admin-panel').style.display = 'block';
+        }
+
+        // Get elements
+        const actionBtn = document.getElementById('actionBtn');
+        const linkContainer = document.getElementById('linkContainer');
+        const displayLink = document.getElementById('displayLink');
+        const saveBtn = document.getElementById('saveBtn');
+        const linkInput = document.getElementById('linkInput');
+        const countdownDisplay = document.getElementById('countdown');
+        const progressBar = document.getElementById('progressBar');
+
+        // Check if there's a saved link in localStorage
+        const savedLink = localStorage.getItem('redirectLink');
+        if (savedLink) {
+            displayLink.href = savedLink;
+            displayLink.textContent = savedLink;
+        } else {
+            // Default link if none is set
+            displayLink.href = "https://example.com";
+            displayLink.textContent = "https://example.com";
+        }
+
+        // Countdown variables
+        let countdown;
+        let timeLeft = 10;
+
+        // Action button click handler
+        actionBtn.addEventListener('click', function() {
+            // Disable the button during countdown
+            actionBtn.disabled = true;
+            actionBtn.textContent = "Countdown Running...";
+            
+            // Start the countdown
+            countdown = setInterval(function() {
+                timeLeft--;
+                countdownDisplay.textContent = `Please wait: ${timeLeft} seconds`;
+                progressBar.style.width = `${(10 - timeLeft) * 10}%`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    countdownDisplay.textContent = "Action Completed!";
+                    actionBtn.textContent = "Done!";
+                    
+                    // Show the link
+                    linkContainer.style.display = 'block';
+                }
+            }, 1000);
+        });
+
+        // Save link handler (admin function)
+        saveBtn.addEventListener('click', function() {
+            const newLink = linkInput.value.trim();
+            if (newLink) {
+                // Basic URL validation
+                if (!newLink.startsWith('http://') && !newLink.startsWith('https://')) {
+                    alert("Please enter a valid URL starting with http:// or https://");
+                    return;
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('redirectLink', newLink);
+                displayLink.href = newLink;
+                displayLink.textContent = newLink;
+                alert("Link saved successfully!");
+            } else {
+                alert("Please enter a URL");
+            }
+        });
+
+        // Reset button if page is refreshed
+        window.addEventListener('beforeunload', function() {
+            if (countdown) {
+                clearInterval(countdown);
+            }
+        });
+    </script>
+</body>
+</html>
